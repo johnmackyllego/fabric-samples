@@ -16,7 +16,7 @@
 /interest_rate_swaps
 /invoice/node_modules
 /chaincode-docker-devmode
-/basic-network/crypto-config
+# /basic-network/crypto-config
 /chaincode/abac
 /chaincode/fabcar
 /chaincode/chaincode_example02
