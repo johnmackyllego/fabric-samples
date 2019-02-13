@@ -1,0 +1,25 @@
+# Emacs backup files
+*~
+*#
+.#*
+# Vim file artifacts
+.*.sw*
+# installed platform-specific binaries
+/bin
+/config
+.DS_Store
+.project
+/balance-transfer
+/commercial-paper
+/fabcar
+/high-throughput
+/interest_rate_swaps
+/invoice/node_modules
+/chaincode-docker-devmode
+/basic-network/crypto-config
+/chaincode/abac
+/chaincode/fabcar
+/chaincode/chaincode_example02
+/chaincode/marbles02
+/chaincode/marbles02_private
+/first-network
