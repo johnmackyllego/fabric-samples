@@ -109,13 +109,13 @@ else if(req.method == "PUT")
   }
   else if(paidAmount)
     {
-      // request.fcn= 'isPaidStatus',
-      // newInvoice.push(paidAmount);
+      request.fcn= 'bankPaymentToSupplier',
+      newInvoice.push(paidAmount);
     }
     else if(repaymentAmount)
     {
-      // request.fcn= 'isRepaymentStatus',
-      // newInvoice.push(repaymentAmount);
+      request.fcn= 'oemRepaysToBank',
+      newInvoice.push(repaymentAmount);
     }
 }
 

@@ -136,45 +136,55 @@ func (s *SmartContract) goodsReceived(APIstub shim.ChaincodeStubInterface, args 
 
 func (s *SmartContract) bankPaymentToSupplier(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2")
+	}
+
 	invoiceAsBytes, _ := APIstub.GetState(args[0])
 	invoice := Invoice{}
 
 	json.Unmarshal(invoiceAsBytes, &invoice)
-	invoice.PaidAmount = args[1]
+	// invoice.PaidAmount = args[1]
 
-	paid, _ := strconv.ParseFloat(args[1], 32)
+	payment, _ := strconv.ParseFloat(args[1], 32)
 	invoiceAmount, _ := strconv.ParseFloat(invoice.InvoiceAmount, 32)
 
-	if paid >= invoiceAmount {
-		return shim.Error("Paid is greater than invoice amount")
+	if payment < invoiceAmount {
+		invoice.PaidAmount = args[1]
+		invoiceAsBytes, _ = json.Marshal(invoice)
+		APIstub.PutState(args[0], invoiceAsBytes)
+
+		return shim.Success(nil)
+	} else {
+		return shim.Error("Payment must be less than invoice amount")
 	}
-
-	invoiceAsBytes, _ = json.Marshal(invoice)
-	APIstub.PutState(args[0], invoiceAsBytes)
-
-	return shim.Success(nil)
 }
 
 func (s *SmartContract) oemRepaysToBank(APIstub shim.ChaincodeStubInterface, args []string) sc.Response {
 
+	if len(args) != 2 {
+		return shim.Error("Incorrect number of arguments. Expecting 2")
+	}
+
 	invoiceAsBytes, _ := APIstub.GetState(args[0])
 	invoice := Invoice{}
 
 	json.Unmarshal(invoiceAsBytes, &invoice)
-	invoice.RepaymentAmount = args[1]
+	// invoice.RepaymentAmount = args[1]
 
-	rpaid, _ := strconv.ParseFloat(args[1], 32)
-	invoiceAmount, _ := strconv.ParseFloat(invoice.InvoiceAmount, 32)
+	repayment, _ := strconv.ParseFloat(args[1], 32)
+	paidAmount, _ := strconv.ParseFloat(invoice.PaidAmount, 32)
 
-	if rpaid < invoiceAmount {
-		return shim.Error("Paid is less than invoice amount")
+	if repayment > paidAmount {
+		invoice.Repaid = "yes"
+		invoice.RepaymentAmount = args[1]
+		invoiceAsBytes, _ = json.Marshal(invoice)
+		APIstub.PutState(args[0], invoiceAsBytes)
+
+		return shim.Success(nil)
+	} else {
+		return shim.Error("Repayment must be greater than paid amount.")
 	}
-	invoice.Repaid = "yes"
-
-	invoiceAsBytes, _ = json.Marshal(invoice)
-	APIstub.PutState(args[0], invoiceAsBytes)
-
-	return shim.Success(nil)
 }
 
 func (s *SmartContract) displayAllInvoices(APIstub shim.ChaincodeStubInterface) sc.Response {
